@@ -34,7 +34,7 @@ async function errorState (response) {
 let ready = async (method, url, params) => {
   let httpDefault = {
     method: method,
-    baseURL: '',
+    baseURL: 'http://47.94.231.91',
     url: url,
     params: method === 'GET' || method === 'DELETE' ? params : null,
     data: method === 'POST' || method === 'PUT' ? qs.stringify(params) : null,
