@@ -1,18 +1,20 @@
 <template>
-  <div>
-    <van-cell-group ref="container" style="height: 100%;">
-      <van-sticky :container="container" >
+  <div style="background-color: #e2e6f4;">
+    <van-cell-group ref="container" style="height: 10%;">
+      <van-sticky :container="container">
         <van-nav-bar title="ᐛ Multilingual翻天下" /><!-- 导航栏 -->
 
-        <van-cell ><!-- 文本框 -->
-          <van-field ref="input1" @focus.native.capture="textareaH=10" @keydown.enter="preventBreak" @keyup.enter="trans"
-            v-model="form.content" :rows="textareaH" type="textarea" clearable placeholder="输入文字" style="background-color: #F8F8F8; border-radius: 18px;"/>
+        <van-cell>
+          <!-- 文本框 -->
+          <van-field ref="input1" @focus.native.capture="textareaH=9" @keydown.enter="preventBreak" @keyup.enter="trans"
+            v-model="form.content" :rows="textareaH" type="textarea" clearable placeholder="输入文字" style="background-color: #F8F8F8; border-radius: 18px;" />
           <van-row type="flex" justify="space-between">
-            <van-col span="23" >
+            <van-col span="23">
               <nobr>
-              <van-button disabled size="small" type="default" :text="form.sourceLanguageName" round></van-button>
-              <van-button disabled color="#F8F8F8" icon="https://img.icons8.com/ios/50/000000/chevron-right.png"></van-button>
-              <van-button disabled size="small" type="default" round class="van-ellipsis" :text="langBtn" style="max-width: 160px; overflow: hidden; text-overflow: ellipsis;"></van-button>
+                <van-button color="#8b8b8b" plain size="small" type="default" :text="form.sourceLanguageName" round></van-button>
+                <van-button disabled color="#FFFFFF" icon="https://img.icons8.com/ios/50/000000/chevron-right.png"></van-button>
+                <van-button color="#8b8b8b" plain size="small" type="default" round class="van-ellipsis" :text="langBtn"
+                  style="max-width: 160px; overflow: hidden; text-overflow: ellipsis;"></van-button>
               </nobr>
             </van-col>
             <van-col span="3">
@@ -24,24 +26,25 @@
 
       <van-cell-group>
         <!-- 翻译结果 -->
-        <van-cell :key="item.name" v-for="(item, index) in form.language" style="background-color: #eeeeee;">
-          <van-cell clickable v-clipboard:copy="result[index]" @click="toNotify"
-            size="large" :key="item.value" :title="form.language[index]" :label="result[index]" :style="resultBackground(index)">
-            <van-icon slot="right-icon" size="2em" name="ellipsis" color="LightSalmon" @click.stop="showPopup(index)" style="line-height: inherit;" />
+        <van-cell :key="item.name" v-for="(item, index) in form.language" style="background-color: #f0f6fc;">
+          <van-cell clickable v-clipboard:copy="result[index]" @click="toNotify" size="large" :key="item.value" :title="form.language[index]"
+            :label="result[index]" :style="resultBackground(index)">
+            <van-icon slot="right-icon" size="2em" name="ellipsis" color="LightSalmon" @click.stop="showPopup(index)"
+              style="line-height: inherit;" />
           </van-cell>
         </van-cell>
-        <van-cell style="height:40em; background-color: #eeeeee;" />
+        <van-cell style="height:40em; background-color: #f0f6fc;" />
       </van-cell-group>
     </van-cell-group>
 
     <van-tabbar safe-area-inset-bottom>
       <!-- 底部导航1 -->
       <van-tabbar-item>
-        <van-dropdown-menu direction="up" >
+        <van-dropdown-menu direction="up">
           <!-- 上拉菜单 -->
           <van-dropdown-item title="源语言">
             <!-- 上拉菜单选项 -->
-            <van-radio-group v-model="form.sourceLanguage">
+            <van-radio-group v-model="form.sourceLanguage" style="z-index: 150;">
               <!-- 单选框 -->
               <van-cell-group>
                 <van-cell size="large" v-for="(item) in langIn" clickable :key="item.value" @click="form.sourceLanguageName=item.name;">
@@ -74,9 +77,9 @@
 
     <!-- 翻译检查面板 -->
     <van-popup v-model="isPopupShow" round closeable :style="{ height: '50%', width: '80%' }">
-      <van-nav-bar title="语义检查" />
-      <van-cell :border="false" size="large" :title="form.PopupContent" />
-      <van-tabbar active-color="#7d7e80">
+      <van-nav-bar :title="form.PopupTitle" />
+      <van-cell :border="false" size="large" :title="transBackResult" />
+      <van-tabbar active-color="#7d7e80" :z-index=-1>
         <van-tabbar-item icon="description" @click="jumpOut('https://www.baidu.com/s?wd='+ form.PopupContent)">百度</van-tabbar-item>
         <van-tabbar-item icon="orders-o" @click="jumpOut('https://www.google.com/search?q='+ form.PopupContent)">谷歌</van-tabbar-item>
         <van-tabbar-item icon="photo-o" @click="jumpOut('https://www.google.com/search?tbm=isch&q='+ form.PopupContent)">谷歌图片</van-tabbar-item>
@@ -137,19 +140,21 @@ export default {
   data () {
     return {
       isPopupShow: false, // 是否展示翻译检查面板
-      textareaH: 8, // 输入框高度
+      textareaH: 5, // 输入框高度
       langIn, // 源语言库
       langOut, // 目标语言库
       form: {
         sourceLanguage: 'auto', // 源语言代码
-        sourceLanguageName: '自动检测', // 源语言名称
+        sourceLanguageName: '自动识别', // 源语言名称
         language: null, // 目标语言代码
         languageName: ' ', // 目标语言名称
         content: null,
         PopupContent: null,
+        PopupTitle: null,
         backgroundStyle: 'background-color: #F8F8F8;'
       },
       result: null,
+      transBackResult: null,
       container: null
     }
   },
@@ -175,10 +180,12 @@ export default {
         for (let lg of this.form.language) {
           await request.get('/trans', {
             query: this.form.content,
+            from: this.form.sourceLanguage,
             to: lg
           })
             .then((res) => {
               console.log(res)
+              this.form.sourceLanguage = res.data.from
               this.result.push(res.data.trans_result[0].dst)
               console.log(this.result)
             })
@@ -188,14 +195,31 @@ export default {
         }
       }
     },
+    async transBack (i) {
+      await request.get('/trans', {
+        query: this.form.PopupContent,
+        from: this.form.language[i],
+        to: this.form.sourceLanguage
+      })
+        .then((res) => {
+          console.log(res)
+          this.transBackResult = res.data.trans_result[0].dst
+          console.log(this.result)
+        })
+        .catch((response) => {
+          console.log(response)
+        })
+    },
     // 多选框点击单元格选中
     toggle (index) {
       this.$refs.checkboxes[index].toggle()
     },
     // 翻译检查弹窗
     showPopup (i) {
-      this.isPopupShow = true
       this.form.PopupContent = this.result[i]
+      this.transBack(i)
+      this.isPopupShow = true
+      this.form.PopupTitle = this.form.language[i] + ' > ' + this.form.sourceLanguage
     },
     toNotify () {
       this.$notify({
@@ -211,15 +235,18 @@ export default {
       window.open(e)
     },
     resultBackground (i) {
-      return (i % 2 === 0) ? 'background-color: #FFFFFF; border-radius: 10px;' : 'background-color: #FFFFFF; border-radius: 10px;'
+      return (i % 2 === 0) ? 'background-color: #FFFFFF; border-radius: 10px;'
+        : 'background-color: #FFFFFF; border-radius: 10px;'
     }
   },
   created () {
     this.form.languageName = []
     this.form.language = []
     this.form.content = ''
+    this.transBackResult = ''
     this.result = []
     this.form.PopupContent = ''
+    this.form.PopupTitle = ''
   }
 }
 </script>
