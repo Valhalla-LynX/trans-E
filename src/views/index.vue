@@ -1,5 +1,5 @@
 <template>
-  <div style="background-color: #e2e6f4;">
+  <div>
     <van-cell-group ref="container" style="height: 10%;">
       <van-sticky :container="container">
         <van-nav-bar title="ᐛ Multilingual翻天下" /><!-- 导航栏 -->
@@ -7,7 +7,8 @@
         <van-cell>
           <!-- 文本框 -->
           <van-field ref="input1" @focus.native.capture="textareaH=9" @keydown.enter="preventBreak" @keyup.enter="trans"
-            v-model="form.content" :rows="textareaH" type="textarea" clearable placeholder="输入文字" style="background-color: #F8F8F8; border-radius: 18px;" />
+            v-model="form.content" :rows="textareaH" type="textarea" clearable placeholder="输入文字" :border="false"
+            style="background-color: #F4F7FA; border-radius: 18px;" />
           <van-row type="flex" justify="space-between">
             <van-col span="23">
               <nobr>
@@ -24,16 +25,17 @@
         </van-cell>
       </van-sticky>
 
-      <van-cell-group>
+      <van-cell-group :border="false">
         <!-- 翻译结果 -->
-        <van-cell :key="item.name" v-for="(item, index) in form.language" style="background-color: #f0f6fc;">
+        <van-cell  :border="false" :key="item.name" v-for="(item, index) in form.language" style="background-color: #F4F7FA;">
           <van-cell clickable v-clipboard:copy="result[index]" @click="toNotify" size="large" :key="item.value" :title="form.language[index]"
             :label="result[index]" :style="resultBackground(index)">
             <van-icon slot="right-icon" size="2em" name="ellipsis" color="LightSalmon" @click.stop="showPopup(index)"
               style="line-height: inherit;" />
           </van-cell>
         </van-cell>
-        <van-cell style="height:40em; background-color: #f0f6fc;" />
+        <van-cell :border="false" style="background-color: #F4F7FA; height: 60px;"></van-cell>
+       <van-cell style="background-color: #F4F7FA; z-index: -1; height: 100%; bottom: 40px; position: fixed;" />
       </van-cell-group>
     </van-cell-group>
 
@@ -80,7 +82,7 @@
       <van-nav-bar :title="form.PopupTitle" />
       <van-cell :border="false" size="large" :title="transBackResult" />
       <van-tabbar active-color="#7d7e80" :z-index=-1>
-        <van-tabbar-item icon="description" @click="jumpOut('https://www.baidu.com/s?wd='+ form.PopupContent)">百度</van-tabbar-item>
+        <van-tabbar-item icon="description" @click="jumpOut('https://magi.com/search?q='+ form.PopupContent)">MAGI</van-tabbar-item>
         <van-tabbar-item icon="orders-o" @click="jumpOut('https://www.google.com/search?q='+ form.PopupContent)">谷歌</van-tabbar-item>
         <van-tabbar-item icon="photo-o" @click="jumpOut('https://www.google.com/search?tbm=isch&q='+ form.PopupContent)">谷歌图片</van-tabbar-item>
         <van-tabbar-item icon="browsing-history-o" @click="jumpOut('https://en.wikipedia.org/wiki/'+ form.PopupContent)">维基百科</van-tabbar-item>
